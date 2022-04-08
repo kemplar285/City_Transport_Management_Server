@@ -1,0 +1,48 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+	id 'org.openapi.generator' version '5.4.0'
+}
+
+group = 'ee.cybernetica'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'io.springfox:springfox-swagger2:3.0.0'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+}
+
+openApiGenerate {
+	generatorName = "spring"
+	inputSpec = "$projectDir/src/main/resources/CityTransportAPI.yaml"
+	outputDir = "$projectDir"
+	apiPackage = "ee.cybernetica.api"
+	modelPackage = "ee.cybernetica.model"
+	configOptions = [
+			interfaceOnly: "true",
+			openApiNullable: "false",
+			skipDefaultInterface: "true"
+	]
+	globalProperties = [
+			apis: "",
+			models: ""
+	]
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+compileJava.dependsOn tasks.openApiGenerate
+processResources.dependsOn tasks.openApiGenerate
