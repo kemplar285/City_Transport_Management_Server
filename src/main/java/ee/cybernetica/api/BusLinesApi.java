@@ -30,10 +30,14 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:36:59.385018700+03:00[Europe/Tallinn]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:57:29.477097300+03:00[Europe/Tallinn]")
 @Validated
 @Tag(name = "bus-lines", description = "the bus-lines API")
 public interface BusLinesApi {
+
+    default Optional<NativeWebRequest> getRequest() {
+        return Optional.empty();
+    }
 
     /**
      * POST /bus-lines : Create a bus line
@@ -58,9 +62,21 @@ public interface BusLinesApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<BusLine> createBusLine(
+    default ResponseEntity<BusLine> createBusLine(
         @Parameter(name = "BusLine", description = "A new bus line object with name and list of bus stops.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) BusLine busLine
-    );
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"busStopIds\" : [ 0, 0 ], \"name\" : \"Kummeli - Ringtee\", \"id\" : 0 }";
+                    //ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 
     /**
@@ -85,10 +101,22 @@ public interface BusLinesApi {
         value = "/bus-lines",
         produces = { "application/json" }
     )
-    ResponseEntity<List<BusLine>> readBusLines(
+    default ResponseEntity<List<BusLine>> readBusLines(
         @Min(1) @Max(50) @Parameter(name = "maxResults", description = "The numbers of items to return.", schema = @Schema(description = "", defaultValue = "20")) @Valid @RequestParam(value = "maxResults", required = false, defaultValue = "20") Integer maxResults,
         @Parameter(name = "name", description = "Optional parameter to filter bus lines by partial name.", schema = @Schema(description = "")) @Valid @RequestParam(value = "name", required = false) String name,
         @Parameter(name = "busStopId", description = "Optional parameter to filter bus lines by bus stops.", schema = @Schema(description = "")) @Valid @RequestParam(value = "busStopId", required = false) Integer busStopId
-    );
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"busStopIds\" : [ 0, 0 ], \"name\" : \"Kummeli - Ringtee\", \"id\" : 0 }";
+                    //ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 }

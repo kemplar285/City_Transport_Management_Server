@@ -17,7 +17,7 @@ import javax.annotation.Generated;
  * ErrorMessage
  */
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:36:59.385018700+03:00[Europe/Tallinn]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:57:29.477097300+03:00[Europe/Tallinn]")
 public class ErrorMessage   {
 
   @JsonProperty("title")

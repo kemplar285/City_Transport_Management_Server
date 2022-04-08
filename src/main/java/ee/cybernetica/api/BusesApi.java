@@ -30,10 +30,14 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
-@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:36:59.385018700+03:00[Europe/Tallinn]")
+@Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:57:29.477097300+03:00[Europe/Tallinn]")
 @Validated
 @Tag(name = "buses", description = "the buses API")
 public interface BusesApi {
+
+    default Optional<NativeWebRequest> getRequest() {
+        return Optional.empty();
+    }
 
     /**
      * POST /buses : Insert a new bus.
@@ -58,9 +62,21 @@ public interface BusesApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Bus> createBus(
+    default ResponseEntity<Bus> createBus(
         @Parameter(name = "Bus", description = "Information about new bus.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) Bus bus
-    );
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
+                    //ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 
     /**
@@ -85,9 +101,12 @@ public interface BusesApi {
         value = "/buses/{busId}",
         produces = { "application/json" }
     )
-    ResponseEntity<Void> deleteBus(
+    default ResponseEntity<Void> deleteBus(
         @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId
-    );
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 
     /**
@@ -109,9 +128,21 @@ public interface BusesApi {
         value = "/buses",
         produces = { "application/json" }
     )
-    ResponseEntity<List<Bus>> readBuses(
+    default ResponseEntity<List<Bus>> readBuses(
         
-    );
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
+                    //ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 
     /**
@@ -140,9 +171,21 @@ public interface BusesApi {
         produces = { "application/json" },
         consumes = { "application/json" }
     )
-    ResponseEntity<Bus> updateBus(
+    default ResponseEntity<Bus> updateBus(
         @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId,
         @Parameter(name = "Bus", description = "Information about bus.", required = true, schema = @Schema(description = "")) @Valid @RequestBody Bus bus
-    );
+    ) {
+        getRequest().ifPresent(request -> {
+            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+                if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
+                    String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
+                    //ApiUtil.setExampleResponse(request, "application/json", exampleString);
+                    break;
+                }
+            }
+        });
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
 
 }

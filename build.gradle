@@ -18,9 +18,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'io.springfox:springfox-swagger2:3.0.0'
+	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
+
 	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-
 }
 
 openApiGenerate {
@@ -30,9 +33,7 @@ openApiGenerate {
 	apiPackage = "ee.cybernetica.api"
 	modelPackage = "ee.cybernetica.model"
 	configOptions = [
-			interfaceOnly: "true",
-			openApiNullable: "false",
-			skipDefaultInterface: "true"
+			openApiNullable: "false"
 	]
 	globalProperties = [
 			apis: "",
@@ -43,6 +44,3 @@ openApiGenerate {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-compileJava.dependsOn tasks.openApiGenerate
-processResources.dependsOn tasks.openApiGenerate
