@@ -20,9 +20,8 @@ dependencies {
 	implementation 'io.springfox:springfox-swagger2:3.0.0'
 	// https://mvnrepository.com/artifact/org.springdoc/springdoc-openapi-ui
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
-
-
-	runtimeOnly 'com.h2database:h2'
+	implementation("com.google.guava:guava:31.1-jre")
+	runtimeOnly 'com.h2database:h2:2.1.210'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

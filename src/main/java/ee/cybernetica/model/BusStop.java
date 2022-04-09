@@ -5,6 +5,7 @@ import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import java.time.OffsetDateTime;
+import javax.persistence.*;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,11 +17,13 @@ import javax.annotation.Generated;
 /**
  * BusStop
  */
-
+@Entity
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:57:29.477097300+03:00[Europe/Tallinn]")
 public class BusStop   {
-
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonProperty("id")
+  @Column(name = "stop_id")
   private Integer id;
 
   @JsonProperty("name")
@@ -50,12 +53,6 @@ public class BusStop   {
   public void setId(Integer id) {
     this.id = id;
   }
-
-  public BusStop name(String name) {
-    this.name = name;
-    return this;
-  }
-
   /**
    * Name of bus stop
    * @return name
@@ -70,11 +67,6 @@ public class BusStop   {
     this.name = name;
   }
 
-  public BusStop latitude(String latitude) {
-    this.latitude = latitude;
-    return this;
-  }
-
   /**
    * Bus stop location latitude
    * @return latitude
@@ -87,11 +79,6 @@ public class BusStop   {
 
   public void setLatitude(String latitude) {
     this.latitude = latitude;
-  }
-
-  public BusStop longitude(String longitude) {
-    this.longitude = longitude;
-    return this;
   }
 
   /**
