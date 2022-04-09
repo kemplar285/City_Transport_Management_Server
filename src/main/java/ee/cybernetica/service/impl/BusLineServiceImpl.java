@@ -4,9 +4,11 @@ import ee.cybernetica.model.Bus;
 import ee.cybernetica.model.BusLine;
 import ee.cybernetica.repository.BusLineRepository;
 import ee.cybernetica.service.CityTransportService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class BusLineServiceImpl implements CityTransportService<BusLine, Integer> {
     private BusLineRepository busLineRepository;
 

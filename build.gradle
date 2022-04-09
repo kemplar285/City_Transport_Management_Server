@@ -28,7 +28,7 @@ dependencies {
 openApiGenerate {
 	generatorName = "spring"
 	inputSpec = "$projectDir/src/main/resources/CityTransportAPI.yaml"
-	outputDir = "$projectDir"
+	outputDir = "$projectDir/gen"
 	apiPackage = "ee.cybernetica.api"
 	modelPackage = "ee.cybernetica.model"
 	configOptions = [
