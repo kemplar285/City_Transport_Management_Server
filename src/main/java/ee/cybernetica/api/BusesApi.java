@@ -128,9 +128,7 @@ public interface BusesApi {
         value = "/buses",
         produces = { "application/json" }
     )
-    default ResponseEntity<List<Bus>> readBuses(
-        
-    ) {
+    default ResponseEntity<List<Bus>> readBuses() {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
