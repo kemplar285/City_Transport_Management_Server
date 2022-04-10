@@ -3,6 +3,7 @@ package ee.cybernetica.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.hibernate.annotations.Cascade;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
@@ -29,7 +30,7 @@ public class BusLine {
 
     @NotNull
     @JsonProperty("busStopIds")
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, targetEntity = BusStop.class)
     @JoinTable(
             name = "BusLine_BusStop",
             joinColumns = @JoinColumn(name = "line_id"),
@@ -98,6 +99,14 @@ public class BusLine {
         }
         return new ArrayList<>();
 
+    }
+
+    /**
+     * Delete all busStops with specified id
+     * @param id bus stop id
+     */
+    public void removeFromBusStopIds(Integer id){
+        busStops.removeIf(s -> s.getId().equals(id));
     }
 
     @Override

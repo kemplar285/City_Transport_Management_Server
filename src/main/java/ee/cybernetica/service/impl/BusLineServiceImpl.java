@@ -75,4 +75,11 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
             return busLineRepository.findWithPageable(pageRequest);
         }
     }
+
+    public List<BusLine> getAllWithBusStopIdInBusStopIds(Integer busStopId){
+        return busLineRepository.findAll()
+                .stream()
+                .filter(busLine -> busLine.getBusStopIds().contains(busStopId))
+                .collect(Collectors.toList());
+    }
 }

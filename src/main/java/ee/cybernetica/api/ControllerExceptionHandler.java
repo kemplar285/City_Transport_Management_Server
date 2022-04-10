@@ -4,6 +4,8 @@ import ee.cybernetica.exception.BusLineNotFoundException;
 import ee.cybernetica.exception.BusNotFoundException;
 import ee.cybernetica.exception.BusStopNotFoundException;
 import ee.cybernetica.model.ErrorMessage;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -102,6 +104,27 @@ public class ControllerExceptionHandler {
         errorMessage.setTitle("Constraint violation");
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(DataIntegrityViolationException ex) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setDetail("Unable to make changes");
+        errorMessage.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorMessage.setTitle("Data integrity violation");
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(EmptyResultDataAccessException.class)
+    public ResponseEntity<ErrorMessage> handleEmptyResultDataAccessExceptions(EmptyResultDataAccessException ex) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setDetail(ex.getMessage());
+        errorMessage.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorMessage.setTitle("Not found");
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+
+
 
 
 }

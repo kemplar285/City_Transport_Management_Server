@@ -75,6 +75,7 @@ public class BusStop {
         this.name = name;
     }
 
+
     /**
      * Bus stop location latitude
      *

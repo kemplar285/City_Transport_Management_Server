@@ -7,6 +7,7 @@ import ee.cybernetica.service.impl.BusStopServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,4 +60,9 @@ public class BusStopsApiController implements BusStopsApi {
         return new ResponseEntity<>(busStopService.add(savedStop), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> deleteBusStop(@Valid @PathVariable(value = "id", required = true) Integer id){
+        busStopService.delete(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

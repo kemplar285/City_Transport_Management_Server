@@ -6,6 +6,7 @@
 package ee.cybernetica.api;
 
 import ee.cybernetica.model.BusStop;
+import ee.cybernetica.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -110,7 +111,23 @@ public interface BusStopsApi {
             }
         });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
 
+    @Operation(
+            operationId = "deleteBusStop",
+            summary = "Deletes the bus stop with given id",
+            tags = { "LineMangagment" },
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "BusStop with given ID deleted successfully."),
+                    @ApiResponse(responseCode = "404", description = "BusStop with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))}
+    )
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            value = "/bus-stops/{id}",
+            produces = { "application/json" }
+    )
+    default ResponseEntity<Void> deleteBusStop(@Parameter(name = "id", description = "The ID of the bus stop to be removed.", schema = @Schema(description = "")) @Valid @PathVariable(value = "id", required = true) Integer id){
+        return null;
     }
 
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -17,50 +18,51 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.naming.Name;
 import java.util.List;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
 @EntityScan("ee.cybernetica.*")
 @EnableJpaRepositories("ee.cybernetica.*")
-@ComponentScan(basePackages = { "ee.cybernetica.*" })
+@ComponentScan(basePackages = {"ee.cybernetica.*"})
 public class CityTransportApplication {
-	private BusRepository busRepository;
-	private BusLineRepository busLineRepository;
-	private BusStopRepository busStopRepository;
-	public CityTransportApplication(BusRepository busRepository
-			, BusLineRepository busLineRepository, BusStopRepository busStopRepository){
-		this.busRepository = busRepository;
-		this.busLineRepository = busLineRepository;
-		this.busStopRepository = busStopRepository;
-	}
-	public static void main(String[] args) {
-		SpringApplication.run(CityTransportApplication.class, args);
-	}
+    private final BusRepository busRepository;
+    private final BusLineRepository busLineRepository;
+    private final BusStopRepository busStopRepository;
 
-	@Bean
-	InitializingBean testData() {
-		return () -> {
-			// Test bus stop
-			BusStop busStop = new BusStop();
-			busStop.setLatitude("a");
-			busStop.setLongitude("b");
-			busStop.setName("testStop");
+    public CityTransportApplication(BusRepository busRepository
+            , BusLineRepository busLineRepository, BusStopRepository busStopRepository) {
+        this.busRepository = busRepository;
+        this.busLineRepository = busLineRepository;
+        this.busStopRepository = busStopRepository;
+    }
 
-			// Test bus line
-			BusLine busLine = new BusLine();
-			busLine.setName("testLine");
-			busLine.addBusStop(busStop);
+    public static void main(String[] args) {
+        SpringApplication.run(CityTransportApplication.class, args);
+    }
 
-			// Test bus
-			Bus bus = new Bus();
-			bus.setLicenceNumber("testBus");
-			bus.setBusLine(busLine);
+    @Bean
+    InitializingBean testData() {
+        return () -> {
+            // Test bus stop
+            BusStop busStop = new BusStop();
+            busStop.setLatitude("a");
+            busStop.setLongitude("b");
+            busStop.setName("testStop");
 
-			// Save
-			busStopRepository.save(busStop);
-			busLineRepository.save(busLine);
-			busRepository.save(bus);
-		};
-	}
+            // Test bus line
+            BusLine busLine = new BusLine();
+            busLine.setName("testLine");
+            busLine.addBusStop(busStop);
 
+            // Test bus
+            Bus bus = new Bus();
+            bus.setLicenceNumber("testBus");
+            bus.setBusLine(busLine);
+
+            // Save
+            busStopRepository.save(busStop);
+            busLineRepository.save(busLine);
+            busRepository.save(bus);
+        };
+    }
 
 
 }
