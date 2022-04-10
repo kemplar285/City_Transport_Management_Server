@@ -16,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.naming.Name;
+import java.time.LocalTime;
 import java.util.List;
 
 @SpringBootApplication(exclude = {ErrorMvcAutoConfiguration.class})
@@ -50,7 +51,8 @@ public class CityTransportApplication {
             // Test bus line
             BusLine busLine = new BusLine();
             busLine.setName("testLine");
-            busLine.addBusStop(busStop);
+            busLine.addBusStop(busStop, LocalTime.of(12, 0));
+
 
             // Test bus
             Bus bus = new Bus();

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Generated;
@@ -57,7 +58,7 @@ public class BusLinesApiController implements BusLinesApi {
         if (busLine != null) {
             savedLine.setName(busLine.getName());
             for(Integer id : busLine.getBusStopIds()){
-                savedLine.addBusStop(busStopService.getById(id));
+                savedLine.addBusStop(busStopService.getById(id), LocalTime.MIDNIGHT);
             }
         }
         return new ResponseEntity<>(busLineService.add(savedLine), HttpStatus.OK);

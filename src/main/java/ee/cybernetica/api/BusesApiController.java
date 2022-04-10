@@ -65,7 +65,7 @@ public class BusesApiController implements BusesApi {
         busFound.setBusLineId(bus.getBusLineId());
         busFound.setLicenceNumber(bus.getLicenceNumber());
         busFound = busService.edit(busFound);
-        return new ResponseEntity<>(bus, HttpStatus.OK);
+        return new ResponseEntity<>(busFound, HttpStatus.OK);
     }
 
     @Override

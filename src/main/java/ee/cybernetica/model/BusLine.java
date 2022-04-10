@@ -1,13 +1,17 @@
 package ee.cybernetica.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.hibernate.annotations.Cascade;
 
 import javax.annotation.Generated;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -29,14 +33,9 @@ public class BusLine {
     private String name;
 
     @NotNull
-    @JsonProperty("busStopIds")
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE, targetEntity = BusStop.class)
-    @JoinTable(
-            name = "BusLine_BusStop",
-            joinColumns = @JoinColumn(name = "line_id"),
-            inverseJoinColumns = @JoinColumn(name = "stop_id")
-    )
-    private List<BusStop> busStops = Lists.newArrayList();
+    @OneToMany(mappedBy = "busLine", targetEntity = BusStopTime.class, cascade = CascadeType.ALL)
+    @JsonProperty("busStopTimes")
+    private List<BusStopTime> busStops = new ArrayList<>();
 
     public BusLine id(Integer id) {
         this.id = id;
@@ -74,15 +73,11 @@ public class BusLine {
         this.name = name;
     }
 
-    public void setBusStops(List<BusStop> busStops) {
-        this.busStops = busStops;
-    }
-
-    public BusLine addBusStop(BusStop busStop) {
+    public BusLine addBusStop(BusStop busStop, LocalTime time) {
         if (this.busStops == null) {
             this.busStops = new ArrayList<>();
         }
-        this.busStops.add(busStop);
+        this.busStops.add(new BusStopTime(this, busStop, time));
         return this;
     }
 
@@ -93,20 +88,27 @@ public class BusLine {
      */
     @NotNull
     @Schema(name = "busStopIds", description = "Ordered bus stop ids from line start to finish", required = true)
+
     public List<Integer> getBusStopIds() {
         if (busStops != null) {
-            return busStops.stream().map(BusStop::getId).sorted().collect(Collectors.toList());
+            return busStops.stream().map(m->m.getBusStop().getId()).sorted().collect(Collectors.toList());
         }
         return new ArrayList<>();
 
     }
+
+    public List<BusStopTime> getBusStops() {
+        return busStops;
+    }
+
+
 
     /**
      * Delete all busStops with specified id
      * @param id bus stop id
      */
     public void removeFromBusStopIds(Integer id){
-        busStops.removeIf(s -> s.getId().equals(id));
+        //busStops.keys().removeIf(s -> s.getId().equals(id));
     }
 
     @Override
