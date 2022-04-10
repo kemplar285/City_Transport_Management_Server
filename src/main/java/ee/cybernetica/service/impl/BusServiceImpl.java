@@ -1,11 +1,10 @@
 package ee.cybernetica.service.impl;
 
-import ee.cybernetica.exception.BusNotFound;
+import ee.cybernetica.exception.BusNotFoundException;
 import ee.cybernetica.model.Bus;
 import ee.cybernetica.repository.BusRepository;
 import ee.cybernetica.service.CityTransportService;
 import org.springframework.stereotype.Service;
-import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -13,9 +12,11 @@ import java.util.List;
 public class BusServiceImpl implements CityTransportService<Bus, Integer> {
     private final BusRepository busRepository;
 
+
     public BusServiceImpl(BusRepository busRepository) {
         this.busRepository = busRepository;
     }
+
 
     @Override
     public Bus add(Bus bus) {
@@ -24,14 +25,14 @@ public class BusServiceImpl implements CityTransportService<Bus, Integer> {
     }
 
     @Override
-    public void delete(Integer id) throws BusNotFound {
+    public void delete(Integer id) throws BusNotFoundException {
         this.getById(id);
         busRepository.deleteById(id);
     }
 
     @Override
-    public Bus getById(Integer id) throws BusNotFound {
-        return busRepository.findById(id).orElseThrow(() -> new BusNotFound("Bus not found"));
+    public Bus getById(Integer id) throws BusNotFoundException {
+        return busRepository.findById(id).orElseThrow(() -> new BusNotFoundException("Bus not found"));
     }
 
     @Override

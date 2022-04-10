@@ -1,9 +1,11 @@
 package ee.cybernetica.service.impl;
 
-import ee.cybernetica.exception.BusLineNotFound;
+import ee.cybernetica.exception.BusLineNotFoundException;
 import ee.cybernetica.model.BusLine;
 import ee.cybernetica.repository.BusLineRepository;
 import ee.cybernetica.service.CityTransportService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
@@ -17,6 +19,8 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
         this.busLineRepository = busLineRepository;
     }
 
+
+
     @Override
     public BusLine add(BusLine item) {
         BusLine saved = busLineRepository.saveAndFlush(item);
@@ -29,8 +33,8 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
     }
 
     @Override
-    public BusLine getById(Integer id) throws BusLineNotFound {
-        return busLineRepository.findById(id).orElseThrow(() -> new BusLineNotFound("Bus line not found"));
+    public BusLine getById(Integer id) throws BusLineNotFoundException {
+        return busLineRepository.findById(id).orElseThrow(() -> new BusLineNotFoundException("Bus line not found"));
     }
 
     @Override
@@ -41,5 +45,10 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
     @Override
     public List<BusLine> getAll() {
         return busLineRepository.findAll();
+    }
+
+    public List<BusLine> getAllWithLimit(Integer limit){
+        Pageable pageRequest = PageRequest.of(0, limit);
+        return busLineRepository.findWithPageable(pageRequest);
     }
 }

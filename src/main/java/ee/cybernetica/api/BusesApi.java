@@ -5,8 +5,8 @@
  */
 package ee.cybernetica.api;
 
-import ee.cybernetica.exception.BusLineNotFound;
-import ee.cybernetica.exception.BusNotFound;
+import ee.cybernetica.exception.BusLineNotFoundException;
+import ee.cybernetica.exception.BusNotFoundException;
 import ee.cybernetica.model.Bus;
 import ee.cybernetica.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,7 +61,7 @@ public interface BusesApi {
     )
     default ResponseEntity<?> createBus(
             @Parameter(name = "Bus", description = "Information about new bus.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) Bus bus
-    ) throws BusLineNotFound {
+    ) throws BusLineNotFoundException {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -100,7 +100,7 @@ public interface BusesApi {
     )
     default ResponseEntity<Void> deleteBus(
             @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId
-    ) throws BusNotFound {
+    ) throws BusNotFoundException {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -169,7 +169,7 @@ public interface BusesApi {
     default ResponseEntity<Bus> updateBus(
             @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId,
             @Parameter(name = "Bus", description = "Information about bus.", required = true, schema = @Schema(description = "")) @Valid @RequestBody Bus bus
-    ) throws BusNotFound, BusLineNotFound {
+    ) throws BusNotFoundException, BusLineNotFoundException {
         getRequest().ifPresent(request -> {
             for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {

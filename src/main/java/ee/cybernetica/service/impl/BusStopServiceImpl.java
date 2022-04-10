@@ -1,6 +1,6 @@
 package ee.cybernetica.service.impl;
 
-import ee.cybernetica.model.Bus;
+import ee.cybernetica.exception.BusStopNotFoundException;
 import ee.cybernetica.model.BusStop;
 import ee.cybernetica.repository.BusStopRepository;
 import ee.cybernetica.service.CityTransportService;
@@ -28,8 +28,8 @@ public class BusStopServiceImpl implements CityTransportService<BusStop, Integer
     }
 
     @Override
-    public BusStop getById(Integer id) {
-        return busStopRepository.findById(id).orElse(null);
+    public BusStop getById(Integer id) throws BusStopNotFoundException {
+        return busStopRepository.findById(id).orElseThrow(()->new BusStopNotFoundException("Bus stop not found"));
     }
 
     @Override

@@ -1,7 +1,8 @@
 package ee.cybernetica.api;
 
-import ee.cybernetica.exception.BusLineNotFound;
-import ee.cybernetica.exception.BusNotFound;
+import ee.cybernetica.exception.BusLineNotFoundException;
+import ee.cybernetica.exception.BusNotFoundException;
+import ee.cybernetica.exception.BusStopNotFoundException;
 import ee.cybernetica.model.ErrorMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,6 +14,8 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import javax.validation.ConstraintViolationException;
 
 @ControllerAdvice
 public class ControllerExceptionHandler {
@@ -38,8 +41,8 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(BusLineNotFound.class)
-    public ResponseEntity<ErrorMessage> handleBusLineNotFoundExceptions(BusLineNotFound ex) {
+    @ExceptionHandler(BusLineNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleBusLineNotFoundExceptions(BusLineNotFoundException ex) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setDetail(ex.getMessage());
         errorMessage.setStatusCode(HttpStatus.BAD_REQUEST.value());
@@ -47,14 +50,23 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(BusNotFound.class)
-    public ResponseEntity<ErrorMessage> handleBusNotFoundExceptions(BusNotFound ex) {
+    @ExceptionHandler(BusNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleBusNotFoundExceptions(BusNotFoundException ex) {
         ErrorMessage errorMessage = new ErrorMessage();
         errorMessage.setDetail(ex.getMessage());
         errorMessage.setStatusCode(HttpStatus.NOT_FOUND.value());
         errorMessage.setTitle(HttpStatus.NOT_FOUND.toString());
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(BusStopNotFoundException.class)
+    public ResponseEntity<ErrorMessage> handleBusNotFoundExceptions(BusStopNotFoundException ex) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setDetail(ex.getMessage());
+        errorMessage.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorMessage.setTitle(HttpStatus.NOT_FOUND.toString());
+        return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorMessage> handleMessageNotReadableExceptions(HttpMessageNotReadableException ex) {
@@ -82,5 +94,14 @@ public class ControllerExceptionHandler {
         errorMessage.setTitle("Illegal argument");
         return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorMessage> handleConstraintViolationExceptions(ConstraintViolationException ex) {
+        ErrorMessage errorMessage = new ErrorMessage();
+        errorMessage.setDetail(ex.getMessage());
+        errorMessage.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorMessage.setTitle("Constraint violation");
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

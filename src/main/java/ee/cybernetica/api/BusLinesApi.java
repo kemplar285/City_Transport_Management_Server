@@ -5,7 +5,9 @@
  */
 package ee.cybernetica.api;
 
+import ee.cybernetica.exception.BusStopNotFoundException;
 import ee.cybernetica.model.BusLine;
+import ee.cybernetica.model.BusLineDTO;
 import ee.cybernetica.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,28 +47,29 @@ public interface BusLinesApi {
      *
      * @param busLine A new bus line object with name and list of bus stops. (optional)
      * @return Returned a bus line dto with fullfilled id field (status code 200)
-     *         or One of the given bus stops do not exist. (status code 400)
+     * or One of the given bus stops do not exist. (status code 400)
      */
     @Operation(
-        operationId = "createBusLine",
-        summary = "Create a bus line",
-        tags = { "LineMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returned a bus line dto with fullfilled id field", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  BusLine.class))),
-            @ApiResponse(responseCode = "400", description = "One of the given bus stops do not exist.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorMessage.class)))
-        }
+            operationId = "createBusLine",
+            summary = "Create a bus line",
+            tags = {"LineMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returned a bus line dto with fullfilled id field", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BusLine.class))),
+                    @ApiResponse(responseCode = "400", description = "One of the given bus stops do not exist.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/bus-lines",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/bus-lines",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<BusLine> createBusLine(
-        @Parameter(name = "BusLine", description = "A new bus line object with name and list of bus stops.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) BusLine busLine
-    ) {
+            @Parameter(name = "BusLine", description = "A new bus line object with name and list of bus stops.",
+                    schema = @Schema(description = "")) @Valid @RequestBody(required = false) BusLineDTO busLine
+    ) throws BusStopNotFoundException {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"busStopIds\" : [ 0, 0 ], \"name\" : \"Kummeli - Ringtee\", \"id\" : 0 }";
                     //ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -84,30 +87,36 @@ public interface BusLinesApi {
      * Queries all bus lines with given optional name, busStopId and limit filters.
      *
      * @param maxResults The numbers of items to return. (optional, default to 20)
-     * @param name Optional parameter to filter bus lines by partial name. (optional)
-     * @param busStopId Optional parameter to filter bus lines by bus stops. (optional)
+     * @param name       Optional parameter to filter bus lines by partial name. (optional)
+     * @param busStopId  Optional parameter to filter bus lines by bus stops. (optional)
      * @return Returned a list of bus stops which fullfill query params. (status code 200)
      */
     @Operation(
-        operationId = "readBusLines",
-        summary = "Get all bus lines with given filters.",
-        tags = { "LineMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returned a list of bus stops which fullfill query params.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  BusLine.class)))
-        }
+            operationId = "readBusLines",
+            summary = "Get all bus lines with given filters.",
+            tags = {"LineMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returned a list of bus stops which fullfill query params.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = BusLine.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/bus-lines",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/bus-lines",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<BusLine>> readBusLines(
-        @Min(1) @Max(50) @Parameter(name = "maxResults", description = "The numbers of items to return.", schema = @Schema(description = "", defaultValue = "20")) @Valid @RequestParam(value = "maxResults", required = false, defaultValue = "20") Integer maxResults,
-        @Parameter(name = "name", description = "Optional parameter to filter bus lines by partial name.", schema = @Schema(description = "")) @Valid @RequestParam(value = "name", required = false) String name,
-        @Parameter(name = "busStopId", description = "Optional parameter to filter bus lines by bus stops.", schema = @Schema(description = "")) @Valid @RequestParam(value = "busStopId", required = false) Integer busStopId
+            @Min(1) @Max(50) @Parameter(name = "maxResults", description = "The numbers of items to return.",
+                    schema = @Schema(description = "", defaultValue = "20"))
+            @Valid @RequestParam(value = "maxResults", required = false, defaultValue = "20") Integer maxResults,
+            @Parameter(name = "name", description = "Optional parameter to filter bus lines by partial name.",
+                    schema = @Schema(description = ""))
+            @Valid @RequestParam(value = "name", required = false) Optional<String> name,
+            @Parameter(name = "busStopId", description = "Optional parameter to filter bus lines by bus stops.",
+                    schema = @Schema(description = ""))
+            @Valid @RequestParam(value = "busStopId", required = false) Optional<Integer> busStopId
     ) {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"busStopIds\" : [ 0, 0 ], \"name\" : \"Kummeli - Ringtee\", \"id\" : 0 }";
                     //ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -118,5 +127,4 @@ public interface BusLinesApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
-
 }

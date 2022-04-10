@@ -1,7 +1,7 @@
 package ee.cybernetica.api;
 
-import ee.cybernetica.exception.BusLineNotFound;
-import ee.cybernetica.exception.BusNotFound;
+import ee.cybernetica.exception.BusLineNotFoundException;
+import ee.cybernetica.exception.BusNotFoundException;
 import ee.cybernetica.model.Bus;
 import ee.cybernetica.service.impl.BusLineServiceImpl;
 import ee.cybernetica.service.impl.BusServiceImpl;
@@ -48,7 +48,7 @@ public class BusesApiController implements BusesApi {
     }
 
     @Override
-    public ResponseEntity<Bus> createBus(@Valid @RequestBody(required = false) Bus bus) throws BusLineNotFound {
+    public ResponseEntity<Bus> createBus(@Valid @RequestBody(required = false) Bus bus) throws BusLineNotFoundException {
             Bus busToSave = new Bus();
             busToSave.setBusLineId(bus.getBusLineId());
             busToSave.setLicenceNumber(bus.getLicenceNumber());
@@ -59,7 +59,7 @@ public class BusesApiController implements BusesApi {
 
     @Override
     public ResponseEntity<Bus> updateBus(@PathVariable("busId") Integer busId
-            ,@Valid @RequestBody(required = true) Bus bus) throws BusNotFound, BusLineNotFound {
+            ,@Valid @RequestBody(required = true) Bus bus) throws BusNotFoundException, BusLineNotFoundException {
         Bus busFound = busService.getById(busId);
         busFound.setBusLine(busLineService.getById(bus.getBusLineId()));
         busFound.setBusLineId(bus.getBusLineId());
@@ -69,7 +69,7 @@ public class BusesApiController implements BusesApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteBus(@PathVariable("busId") Integer busId) throws BusNotFound {
+    public ResponseEntity<Void> deleteBus(@PathVariable("busId") Integer busId) throws BusNotFoundException {
         busService.delete(busId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

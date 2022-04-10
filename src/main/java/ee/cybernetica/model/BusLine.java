@@ -26,6 +26,7 @@ public class BusLine {
     @JsonProperty("name")
     private String name;
 
+    @JsonProperty("busStopIds")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "BusLine_BusStop",
@@ -33,10 +34,6 @@ public class BusLine {
             inverseJoinColumns = @JoinColumn(name = "stop_id")
     )
     private List<BusStop> busStops = Lists.newArrayList();
-
-    @Transient
-    @JsonProperty("busStopIds")
-    private List<Integer> BusStopIds = new ArrayList<>();
 
     public BusLine id(Integer id) {
         this.id = id;
@@ -72,6 +69,10 @@ public class BusLine {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setBusStops(List<BusStop> busStops) {
+        this.busStops = busStops;
     }
 
     public BusLine addBusStop(BusStop busStop) {
