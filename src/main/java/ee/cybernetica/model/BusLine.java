@@ -23,9 +23,11 @@ public class BusLine {
     @Column(name = "line_id")
     private Integer id;
 
+    @NotNull
     @JsonProperty("name")
     private String name;
 
+    @NotNull
     @JsonProperty("busStopIds")
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(

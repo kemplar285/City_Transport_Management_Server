@@ -2,8 +2,11 @@ package ee.cybernetica.service.impl;
 
 import ee.cybernetica.exception.BusNotFoundException;
 import ee.cybernetica.model.Bus;
+import ee.cybernetica.model.BusLine;
 import ee.cybernetica.repository.BusRepository;
 import ee.cybernetica.service.CityTransportService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,4 +47,5 @@ public class BusServiceImpl implements CityTransportService<Bus, Integer> {
     public List<Bus> getAll() {
         return busRepository.findAll();
     }
+
 }

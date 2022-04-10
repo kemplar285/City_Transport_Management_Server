@@ -1,9 +1,12 @@
 package ee.cybernetica.service.impl;
 
 import ee.cybernetica.exception.BusStopNotFoundException;
+import ee.cybernetica.model.BusLine;
 import ee.cybernetica.model.BusStop;
 import ee.cybernetica.repository.BusStopRepository;
 import ee.cybernetica.service.CityTransportService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,5 +43,13 @@ public class BusStopServiceImpl implements CityTransportService<BusStop, Integer
     @Override
     public List<BusStop> getAll() {
         return busStopRepository.findAll();
+    }
+
+    public List<BusStop> getAllByNameWithLimit(String name, Integer limit){
+        Pageable pageRequest = PageRequest.of(0, limit);
+        if(name == null){
+            return busStopRepository.findAllWithLimit(pageRequest);
+        }
+        return busStopRepository.findAllByNameWithLimit(name, pageRequest);
     }
 }

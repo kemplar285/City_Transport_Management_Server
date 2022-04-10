@@ -5,7 +5,6 @@ import ee.cybernetica.model.BusLine;
 import ee.cybernetica.model.BusLineDTO;
 import ee.cybernetica.service.impl.BusLineServiceImpl;
 import ee.cybernetica.service.impl.BusStopServiceImpl;
-import io.swagger.models.auth.In;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import javax.annotation.Generated;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
@@ -48,15 +46,7 @@ public class BusLinesApiController implements BusLinesApi {
             @Valid @RequestParam(value = "name", required = false) Optional<String> name,
             @Valid @RequestParam(value = "busStopId", required = false) Optional<Integer> busStopId
     ) {
-        List<BusLine> lines = busLineService.getAllWithLimit(maxResults);
-        if (name.isPresent()) {
-            lines = lines.stream().filter(m -> m.getName().equals(name.get()))
-                    .collect(Collectors.toList());
-        }
-        if (busStopId.isPresent()) {
-            lines = lines.stream().filter(m -> m.getBusStopIds().contains(busStopId.get()))
-                    .collect(Collectors.toList());
-        }
+        List<BusLine> lines = busLineService.getAllWithOptionalParams(maxResults, name, busStopId);
         return new ResponseEntity<>(lines, HttpStatus.OK);
     }
 

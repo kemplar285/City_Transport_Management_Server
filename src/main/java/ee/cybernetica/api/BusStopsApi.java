@@ -72,7 +72,6 @@ public interface BusStopsApi {
             }
         });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
     }
 
 

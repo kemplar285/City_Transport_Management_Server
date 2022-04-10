@@ -10,15 +10,16 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BusLineServiceImpl implements CityTransportService<BusLine, Integer> {
-    private BusLineRepository busLineRepository;
+    private final BusLineRepository busLineRepository;
 
     public BusLineServiceImpl(BusLineRepository busLineRepository) {
         this.busLineRepository = busLineRepository;
     }
-
 
 
     @Override
@@ -47,8 +48,31 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
         return busLineRepository.findAll();
     }
 
-    public List<BusLine> getAllWithLimit(Integer limit){
+    /**
+     * Determines which parameters are present and calls corresponding repository method.
+     * @param limit max records
+     * @param name bus line name
+     * @param busStopId busStopId in busStopIds
+     * @return
+     */
+    public List<BusLine> getAllWithOptionalParams(Integer limit, Optional<String> name, Optional<Integer> busStopId) {
         Pageable pageRequest = PageRequest.of(0, limit);
-        return busLineRepository.findWithPageable(pageRequest);
+        if (name.isPresent() && busStopId.isPresent()) {
+            List<BusLine> busLines = busLineRepository.findWithNameAndLimit(name.get(), pageRequest)
+                    .stream()
+                    .filter(busLine -> busLine.getBusStopIds().contains(busStopId.get()))
+                    .collect(Collectors.toList());
+            return busLines;
+        } else if (busStopId.isPresent()) {
+            List<BusLine> busLines = busLineRepository.findWithPageable(pageRequest)
+                    .stream()
+                    .filter(busLine -> busLine.getBusStopIds().contains(busStopId.get()))
+                    .collect(Collectors.toList());
+            return busLines;
+        } else if (name.isPresent()) {
+            return busLineRepository.findWithNameAndLimit(name.get(), pageRequest);
+        } else {
+            return busLineRepository.findWithPageable(pageRequest);
+        }
     }
 }
