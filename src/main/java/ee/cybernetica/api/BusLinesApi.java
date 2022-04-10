@@ -125,6 +125,33 @@ public interface BusLinesApi {
             }
         });
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
 
+    /**
+     * DELETE /bus-lines/{id} : Deletes a bus line.
+     * Searches for a specific bus stop, deleting all it from the database.
+     * When at least one bus is related to the line, the bus line is active and cannot be deleted.
+     *
+     * @param id Common ID parameter of bus line. (required)
+     * @return Bus line with given ID deleted successfully. (status code 204)
+     * or Bus line with given ID can not be deleted. (status code 400)
+     * or Bus line with given ID not found error. (status code 404)
+     */
+    @Operation(
+            operationId = "deleteBusLine",
+            summary = "Deletes the bus line with given id",
+            tags = {"LineMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "BusStop with given ID deleted successfuly"),
+                    @ApiResponse(responseCode = "400", description = "BusStop with given ID can not be deleted.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "404", description = "BusStop with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))}
+    )
+    @RequestMapping(
+            method = RequestMethod.DELETE,
+            value = "/bus-lines/{id}",
+            produces = {"application/json"}
+    )
+    default ResponseEntity<Void> deleteBusLine(@Parameter(name = "id", description = "The ID of the bus line to be removed.", schema = @Schema(description = "")) @Valid @PathVariable(value = "id", required = true) Integer id) {
+        return null;
     }
 }

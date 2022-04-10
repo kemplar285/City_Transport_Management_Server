@@ -113,6 +113,14 @@ public interface BusStopsApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    /**
+     * DELETE /bus-stops/{busId} : Deletes a bus stop.
+     * Searches for a specific bus stop, deleting all its appearances from the database.
+     *
+     * @param id Common ID parameter of bus stop. (required)
+     * @return Bus stop with given ID deleted successfully. (status code 204)
+     * or Bus Stop with given ID not found error. (status code 404)
+     */
     @Operation(
             operationId = "deleteBusStop",
             summary = "Deletes the bus stop with given id",
