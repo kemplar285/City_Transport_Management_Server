@@ -5,15 +5,15 @@
  */
 package ee.cybernetica.api;
 
+import ee.cybernetica.exception.BusLineNotFound;
+import ee.cybernetica.exception.BusNotFound;
 import ee.cybernetica.model.Bus;
 import ee.cybernetica.model.ErrorMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,12 +21,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Generated;
 
@@ -45,28 +42,28 @@ public interface BusesApi {
      *
      * @param bus Information about new bus. (optional)
      * @return Returned a new bus object with fullfilled id field from database. (status code 200)
-     *         or Invalid request body content. (status code 400)
+     * or Invalid request body content. (status code 400)
      */
     @Operation(
-        operationId = "createBus",
-        summary = "Insert a new bus.",
-        tags = { "BusMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returned a new bus object with fullfilled id field from database.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  Bus.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request body content.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorMessage.class)))
-        }
+            operationId = "createBus",
+            summary = "Insert a new bus.",
+            tags = {"BusMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returned a new bus object with fullfilled id field from database.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bus.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request body content.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.POST,
-        value = "/buses",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.POST,
+            value = "/buses",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
-    default ResponseEntity<Bus> createBus(
-        @Parameter(name = "Bus", description = "Information about new bus.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) Bus bus
-    ) {
+    default ResponseEntity<?> createBus(
+            @Parameter(name = "Bus", description = "Information about new bus.", schema = @Schema(description = "")) @Valid @RequestBody(required = false) Bus bus
+    ) throws BusLineNotFound {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
                     //ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -85,25 +82,25 @@ public interface BusesApi {
      *
      * @param busId Common ID parameter of bus. (required)
      * @return Bus with given ID deleted successfully. (status code 204)
-     *         or Bus with given ID not found error. (status code 404)
+     * or Bus with given ID not found error. (status code 404)
      */
     @Operation(
-        operationId = "deleteBus",
-        summary = "Deletes a bus.",
-        tags = { "BusMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "204", description = "Bus with given ID deleted successfully."),
-            @ApiResponse(responseCode = "404", description = "Bus with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorMessage.class)))
-        }
+            operationId = "deleteBus",
+            summary = "Deletes a bus.",
+            tags = {"BusMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Bus with given ID deleted successfully."),
+                    @ApiResponse(responseCode = "404", description = "Bus with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.DELETE,
-        value = "/buses/{busId}",
-        produces = { "application/json" }
+            method = RequestMethod.DELETE,
+            value = "/buses/{busId}",
+            produces = {"application/json"}
     )
     default ResponseEntity<Void> deleteBus(
-        @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId
-    ) {
+            @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId
+    ) throws BusNotFound {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
@@ -116,21 +113,21 @@ public interface BusesApi {
      * @return Returned a list of buses. (status code 200)
      */
     @Operation(
-        operationId = "readBuses",
-        summary = "Query a list of buses.",
-        tags = { "BusMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returned a list of buses.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  Bus.class)))
-        }
+            operationId = "readBuses",
+            summary = "Query a list of buses.",
+            tags = {"BusMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returned a list of buses.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bus.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.GET,
-        value = "/buses",
-        produces = { "application/json" }
+            method = RequestMethod.GET,
+            value = "/buses",
+            produces = {"application/json"}
     )
     default ResponseEntity<List<Bus>> readBuses() {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
                     //ApiUtil.setExampleResponse(request, "application/json", exampleString);
@@ -148,33 +145,33 @@ public interface BusesApi {
      * Searches for a specific bus with given id and updates its data.
      *
      * @param busId Common ID parameter of bus. (required)
-     * @param bus Information about bus. (required)
+     * @param bus   Information about bus. (required)
      * @return Returned a updated bus object. (status code 200)
-     *         or Bus with given ID not found error. (status code 404)
-     *         or Invalid request body content. (status code 400)
+     * or Bus with given ID not found error. (status code 404)
+     * or Invalid request body content. (status code 400)
      */
     @Operation(
-        operationId = "updateBus",
-        summary = "Updates bus information.",
-        tags = { "BusMangagment" },
-        responses = {
-            @ApiResponse(responseCode = "200", description = "Returned a updated bus object.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  Bus.class))),
-            @ApiResponse(responseCode = "404", description = "Bus with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorMessage.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request body content.", content = @Content(mediaType = "application/json", schema = @Schema(implementation =  ErrorMessage.class)))
-        }
+            operationId = "updateBus",
+            summary = "Updates bus information.",
+            tags = {"BusMangagment"},
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Returned a updated bus object.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = Bus.class))),
+                    @ApiResponse(responseCode = "404", description = "Bus with given ID not found error.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid request body content.", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorMessage.class)))
+            }
     )
     @RequestMapping(
-        method = RequestMethod.PUT,
-        value = "/buses/{busId}",
-        produces = { "application/json" },
-        consumes = { "application/json" }
+            method = RequestMethod.PUT,
+            value = "/buses/{busId}",
+            produces = {"application/json"},
+            consumes = {"application/json"}
     )
     default ResponseEntity<Bus> updateBus(
-        @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId,
-        @Parameter(name = "Bus", description = "Information about bus.", required = true, schema = @Schema(description = "")) @Valid @RequestBody Bus bus
-    ) {
+            @Parameter(name = "busId", description = "Common ID parameter of bus.", required = true, schema = @Schema(description = "")) @PathVariable("busId") Integer busId,
+            @Parameter(name = "Bus", description = "Information about bus.", required = true, schema = @Schema(description = "")) @Valid @RequestBody Bus bus
+    ) throws BusNotFound, BusLineNotFound {
         getRequest().ifPresent(request -> {
-            for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
+            for (MediaType mediaType : MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
                     String exampleString = "{ \"licenceNumber\" : \"460TNP\", \"id\" : 0, \"busLineId\" : 0 }";
                     //ApiUtil.setExampleResponse(request, "application/json", exampleString);

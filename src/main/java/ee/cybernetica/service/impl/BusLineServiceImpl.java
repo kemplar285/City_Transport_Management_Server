@@ -1,10 +1,11 @@
 package ee.cybernetica.service.impl;
 
-import ee.cybernetica.model.Bus;
+import ee.cybernetica.exception.BusLineNotFound;
 import ee.cybernetica.model.BusLine;
 import ee.cybernetica.repository.BusLineRepository;
 import ee.cybernetica.service.CityTransportService;
 import org.springframework.stereotype.Service;
+
 
 import java.util.List;
 
@@ -28,8 +29,8 @@ public class BusLineServiceImpl implements CityTransportService<BusLine, Integer
     }
 
     @Override
-    public BusLine getById(Integer id) {
-        return busLineRepository.findById(id).orElse(null);
+    public BusLine getById(Integer id) throws BusLineNotFound {
+        return busLineRepository.findById(id).orElseThrow(() -> new BusLineNotFound("Bus line not found"));
     }
 
     @Override

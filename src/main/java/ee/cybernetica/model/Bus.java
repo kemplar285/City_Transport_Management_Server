@@ -2,8 +2,9 @@ package ee.cybernetica.model;
 
 import java.net.URI;
 import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
+
+import com.fasterxml.jackson.annotation.*;
+
 import java.time.OffsetDateTime;
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -19,6 +20,8 @@ import javax.annotation.Generated;
  */
 @Entity
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2022-04-08T12:57:29.477097300+03:00[Europe/Tallinn]")
+@JsonInclude(JsonInclude.Include.NON_DEFAULT)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Bus   {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,10 +29,12 @@ public class Bus   {
   private Integer id;
 
   @JsonProperty("licenceNumber")
+  @NotNull
   private String licenceNumber;
 
   @ManyToOne
   @JoinColumn(name = "line_id")
+  @JsonIgnore
   private BusLine busLine;
 
   @JsonProperty("busLineId")
@@ -44,6 +49,15 @@ public class Bus   {
   @PostLoad
   private void postLoad() {
     this.busLineId = busLine.getId();
+  }
+
+  public Bus() {
+  }
+
+  public Bus(Integer id, String licenceNumber, Integer busLineId) {
+    this.id = id;
+    this.licenceNumber = licenceNumber;
+    this.busLineId = busLineId;
   }
 
   /**
@@ -81,7 +95,7 @@ public class Bus   {
   
   @Schema(name = "busLineId", example = "0", description = "Bus line which bus is serving.", required = false)
   public Integer getBusLineId() {
-    return busLine.getId();
+    return busLineId;
   }
 
   @Override
@@ -123,6 +137,10 @@ public class Bus   {
       return "null";
     }
     return o.toString().replace("\n", "\n    ");
+  }
+
+  public void setBusLineId(Integer busLineId) {
+    this.busLineId = busLineId;
   }
 }
 
